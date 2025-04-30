@@ -129,6 +129,14 @@ java -jar target/wargame-poo-1.0-SNAPSHOT.jar
 
 Pour signaler un bug ou suggérer une amélioration, veuillez créer une issue sur le dépôt GitHub.
 
-## Licence
+## Auteurs
 
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails. 
+Junior K 
+
+Thed T
+
+Claudia N
+
+Rayane R
+
+Marwan B
