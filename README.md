@@ -131,12 +131,8 @@ Pour signaler un bug ou suggérer une amélioration, veuillez créer une issue s
 
 ## Auteurs
 
-Junior K 
-
-Thed T
-
-Claudia N
-
-Rayane R
-
-Marwan B
+- Junior K 
+- Thed T
+- Claudia N
+- Rayane R
+- Marwan B
