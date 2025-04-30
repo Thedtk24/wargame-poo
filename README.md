@@ -41,7 +41,7 @@ brew install maven
 
 1. Clonez le dépôt :
 ```bash
-git clone [URL_DU_DEPOT]
+git clone https://github.com/Thedtk24/wargame-poo.git
 cd wargame-poo
 ```
 
