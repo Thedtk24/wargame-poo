@@ -8,6 +8,11 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HexagoneTerrain {
     private static final int RAYON = 30;
@@ -15,6 +20,22 @@ public class HexagoneTerrain {
     private final Terrain terrain;
     private final Path2D.Double forme;
     private final Point centre;
+    private static final Map<Terrain, BufferedImage> imagesTerrain = new HashMap<>();
+
+    static {
+        try {
+            imagesTerrain.put(Terrain.VILLAGE, ImageIO.read(HexagoneTerrain.class.getResourceAsStream("/images/village.png")));
+            imagesTerrain.put(Terrain.FORTERESSE, ImageIO.read(HexagoneTerrain.class.getResourceAsStream("/images/forteresse.png")));
+            imagesTerrain.put(Terrain.EAU_PROFONDE, ImageIO.read(HexagoneTerrain.class.getResourceAsStream("/images/eau.png")));
+            imagesTerrain.put(Terrain.PLAINE, ImageIO.read(HexagoneTerrain.class.getResourceAsStream("/images/plaine.png")));
+            imagesTerrain.put(Terrain.FORET, ImageIO.read(HexagoneTerrain.class.getResourceAsStream("/images/foret.png")));
+            imagesTerrain.put(Terrain.COLLINE, ImageIO.read(HexagoneTerrain.class.getResourceAsStream("/images/colline.png")));
+            imagesTerrain.put(Terrain.MONTAGNE, ImageIO.read(HexagoneTerrain.class.getResourceAsStream("/images/montagne.png")));
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement des images de terrain : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     public HexagoneTerrain(Position position, Terrain terrain) {
         this.position = position;
@@ -54,44 +75,43 @@ public class HexagoneTerrain {
 
     public void dessinerFond(Graphics2D g2d) {
         // Sauvegarder l'état du Graphics2D
-        AffineTransform oldTransform = g2d.getTransform();
         Shape oldClip = g2d.getClip();
         
         // Définir le clip pour ne dessiner que dans l'hexagone
         g2d.setClip(forme);
 
-        // Dessiner la texture selon le type de terrain
-        switch (terrain) {
-            case VILLAGE:
-                dessinerVillage(g2d);
-                break;
-            case FORTERESSE:
-                dessinerForteresse(g2d);
-                break;
-            case EAU_PROFONDE:
-                dessinerEau(g2d);
-                break;
-            case PLAINE:
-                dessinerPlaine(g2d);
-                break;
-            case FORET:
-                dessinerForet(g2d);
-                break;
-            case COLLINE:
-                dessinerColline(g2d);
-                break;
-            case MONTAGNE:
-                dessinerMontagne(g2d);
-                break;
+        // Dessiner l'image du terrain
+        BufferedImage image = imagesTerrain.get(terrain);
+        if (image != null) {
+            g2d.drawImage(image, 
+                centre.x - RAYON, 
+                centre.y - RAYON, 
+                2 * RAYON, 
+                2 * RAYON, 
+                null);
+        } else {
+            // Fallback sur les dessins vectoriels si l'image n'est pas disponible
+            dessinerTerrainVectoriel(g2d);
         }
 
-        // Restaurer l'état du Graphics2D
+        // Restaurer le clip
         g2d.setClip(oldClip);
-        g2d.setTransform(oldTransform);
         
-        // Dessiner la bordure
+        // Dessiner la bordure de l'hexagone
         g2d.setColor(Color.BLACK);
         g2d.draw(forme);
+    }
+
+    private void dessinerTerrainVectoriel(Graphics2D g2d) {
+        switch (terrain) {
+            case VILLAGE -> dessinerVillage(g2d);
+            case FORTERESSE -> dessinerForteresse(g2d);
+            case EAU_PROFONDE -> dessinerEau(g2d);
+            case PLAINE -> dessinerPlaine(g2d);
+            case FORET -> dessinerForet(g2d);
+            case COLLINE -> dessinerColline(g2d);
+            case MONTAGNE -> dessinerMontagne(g2d);
+        }
     }
 
     private void dessinerVillage(Graphics2D g2d) {
@@ -186,7 +206,7 @@ public class HexagoneTerrain {
     }
 
     public void dessiner(Graphics2D g2d) {
-        // Cette méthode n'est plus utilisée car on utilise l'image de fond
+        dessinerFond(g2d);
     }
 
     public boolean contient(Point point) {
