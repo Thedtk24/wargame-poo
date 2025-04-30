@@ -96,6 +96,117 @@ java -jar target/wargame-poo-1.0-SNAPSHOT.jar
 | Forteresse | 1 | 60% | Meilleure défense |
 | Eau profonde | - | 0% | Infranchissable |
 
+### Détails des terrains
+
+#### 1. Village (Gris clair avec maisons)
+- **Apparence** : Fond gris clair avec 3 petites maisons carrées
+- **Bonus de défense** : +40%
+- **Points de déplacement** : 1
+- **Avantages** :
+  - Bon bonus de défense
+  - Coût de déplacement faible
+- **Désavantages** :
+  - Peu de couverture visuelle
+- **Stratégie** : Idéal pour défendre des unités fragiles comme les mages ou les archers
+
+#### 2. Forteresse (Gris foncé avec murs)
+- **Apparence** : Fond gris foncé avec des murs
+- **Bonus de défense** : +60%
+- **Points de déplacement** : 1
+- **Avantages** :
+  - Meilleur bonus de défense du jeu
+  - Coût de déplacement faible
+- **Désavantages** :
+  - Peu commun sur la carte
+- **Stratégie** : Position clé à contrôler, idéal pour les unités de défense comme l'infanterie lourde
+
+#### 3. Eau profonde (Bleu avec vagues)
+- **Apparence** : Fond bleu avec motifs de vagues
+- **Bonus de défense** : +0%
+- **Points de déplacement** : 0 (infranchissable)
+- **Avantages** :
+  - Crée des barrières naturelles
+- **Désavantages** :
+  - Impassable
+  - Aucun bonus de défense
+- **Stratégie** : Utiliser comme barrière naturelle pour protéger vos flancs
+
+#### 4. Plaine (Vert clair avec herbe)
+- **Apparence** : Fond vert clair avec motifs d'herbe
+- **Bonus de défense** : +20%
+- **Points de déplacement** : 1
+- **Avantages** :
+  - Coût de déplacement faible
+  - Bonne visibilité
+- **Désavantages** :
+  - Bonus de défense faible
+- **Stratégie** : Idéal pour les unités rapides comme la cavalerie
+
+#### 5. Forêt (Vert foncé avec arbres)
+- **Apparence** : Fond vert foncé avec 3 arbres
+- **Bonus de défense** : +40%
+- **Points de déplacement** : 2
+- **Avantages** :
+  - Bon bonus de défense
+  - Couverture visuelle
+- **Désavantages** :
+  - Coût de déplacement élevé
+- **Stratégie** : Parfait pour tendre des embuscades ou protéger des unités fragiles
+
+#### 6. Colline (Marron clair avec relief)
+- **Apparence** : Fond marron clair avec relief
+- **Bonus de défense** : +50%
+- **Points de déplacement** : 2
+- **Avantages** :
+  - Très bon bonus de défense
+  - Avantage de hauteur
+- **Désavantages** :
+  - Coût de déplacement élevé
+- **Stratégie** : Position stratégique pour contrôler la zone
+
+#### 7. Montagne (Gris foncé avec neige)
+- **Apparence** : Fond gris foncé avec sommet enneigé
+- **Bonus de défense** : +60%
+- **Points de déplacement** : 3
+- **Avantages** :
+  - Meilleur bonus de défense du jeu
+  - Excellente couverture
+- **Désavantages** :
+  - Coût de déplacement très élevé
+- **Stratégie** : Difficile d'accès mais offre une excellente position défensive
+
+### Mécaniques de déplacement détaillées
+
+#### Règles générales
+- Chaque unité a un nombre limité de points de déplacement par tour
+- Le coût de déplacement dépend du terrain
+- Les unités ne peuvent pas traverser les cases d'eau profonde
+- Les unités ne peuvent pas se déplacer sur une case occupée par une autre unité
+
+#### Exemples de déplacements
+- Une unité avec 4 points de déplacement peut :
+  - Se déplacer de 4 cases en plaine (1 point par case)
+  - Se déplacer de 2 cases en forêt (2 points par case)
+  - Se déplacer d'une seule case en montagne (3 points par case)
+  - Ne peut pas traverser l'eau profonde
+
+### Stratégie avancée
+
+#### Positionnement défensif
+- Utilisez les terrains avec un bonus de défense élevé (forteresse, montagne) pour vos unités fragiles
+- Les forêts et collines offrent un bon compromis entre défense et mobilité
+- Évitez de laisser vos unités en plaine sans protection
+
+#### Positionnement offensif
+- Les plaines sont idéales pour les unités rapides
+- Utilisez les forêts pour approcher discrètement l'ennemi
+- Les collines offrent une bonne position pour lancer des attaques
+
+#### Contrôle du terrain
+- Contrôlez les forteresses et les villages pour leurs bonus de défense
+- Utilisez l'eau profonde comme barrière naturelle
+- Les montagnes peuvent servir de points de contrôle stratégiques
+
 ### Règles du jeu
 1. Chaque unité peut se déplacer selon ses points de mouvement
 2. Le coût de déplacement dépend du terrain
