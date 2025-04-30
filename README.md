@@ -55,4 +55,37 @@ Maven 3.x
 mvn clean install
 ```
 
+### Exécution
 
+```
+java -jar target/wargame-1.0.jar
+```
+
+### Extensions prévues
+
+- Éditeur de scénarios personnalisés
+- Évènements aléatoires (renforts, météo)
+- Ligne de tir pour les unités à distance
+- Limite de temps par tour
+
+---
+
+## Équipe de développement
+
+Nana Claudia 
+
+Junior Koudogbo 
+
+Thed Arthur Toko
+
+Rayane Riffay
+
+Ben-Mohammed Marwan
+
+
+### Dates importantes
+Constitution des groupes : 30 avril 2025
+
+Rapport final : 22 mai 2025
+
+Soutenance et rendu : 23 mai 2025
