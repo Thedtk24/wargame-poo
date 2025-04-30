@@ -29,7 +29,7 @@ Ce projet est une implémentation d’un **wargame tactique au tour par tour**, 
 
 ### Diagramme de classes UML
 
-
+![Diagramme classe](https://github.com/user-attachments/assets/462afc18-6975-4d2f-bade-e990788536f2)
 
 ### Scénarios d'utilisation
 
