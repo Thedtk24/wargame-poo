@@ -1,80 +1,75 @@
-# Wargame Tactique Tour par Tour – Projet POO 2025
+# Wargame - Projet POO IATIC 3
 
-Ce projet est une implémentation d’un **wargame tactique au tour par tour**, développé en Java dans le cadre du module de Programmation Orientée Objet (IATIC 3). Il simule des batailles entre unités sur un plateau hexagonal, avec une interface graphique Swing et une logique de jeu complète (déplacement, attaque, terrain, IA...).
+Ce projet est un jeu de stratégie tactique tour par tour développé dans le cadre du cours de Programmation Orientée Objet à l'IATIC 3.
 
----
+## Description
 
-## Objectifs pédagogiques
+Le jeu se déroule sur une grille hexagonale où deux joueurs s'affrontent en déplaçant leurs unités et en combattant. Le jeu comprend différents types de terrain et d'unités, chacun avec ses propres caractéristiques.
 
-- Approfondir la programmation orientée objet (héritage, polymorphisme, encapsulation)
-- Maîtriser la bibliothèque graphique **Swing**
-- Appliquer les principes de conception logicielle (MVC, SOLID)
-- Travailler en **équipe pluridisciplinaire**
+### Caractéristiques principales
 
----
+- Plateau de jeu hexagonal
+- Différents types de terrain (plaine, forêt, montagne, etc.)
+- Plusieurs types d'unités (infanterie, archer)
+- Combat au tour par tour
+- Mode joueur contre joueur ou contre l'IA
+- Interface graphique avec Swing
 
-## Fonctionnalités principales
+## Prérequis
 
-- Plateau de jeu hexagonal avec différents types de terrain
-- Cinq types d’unités avec statistiques variées (attaque, défense, portée, déplacement)
-- Système de combat au corps à corps ou à distance, influencé par le terrain
-- Brouillard de guerre et champ de vision par unité
-- Jeu multijoueur local : humains ou IA
-- Sauvegarde et chargement de parties
-- Interface utilisateur claire avec aide intégrée
+- Java 17 ou supérieur
+- Maven 3.6 ou supérieur
 
----
+## Installation
 
-## Architecture du projet
-
-### Diagramme de classes UML
-
-![Diagramme classe](https://github.com/user-attachments/assets/462afc18-6975-4d2f-bade-e990788536f2)
-
-### Scénarios d'utilisation
-
-- Déplacement d'une unité sur le plateau
-- Attaque d'une unité ennemie
-- Repos d'une unité blessée
-- Victoire par anéantissement de l’ennemi ou survie jusqu’au dernier tour
-- Tour d’un joueur IA (comportement simple basé sur la proximité)
-
----
-
-## Installation et exécution
-
-### Prérequis
-
-Java 17 ou supérieur
-
-Maven 3.x
-
-### Compliation 
-
-```
-mvn clean install
+1. Cloner le dépôt :
+```bash
+git clone [URL_DU_DEPOT]
+cd wargame-poo
 ```
 
-### Exécution
+2. Compiler le projet :
+```bash
+mvn clean package
+```
+
+## Exécution
+
+Pour lancer le jeu :
+```bash
+java -jar target/wargame-poo-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+## Comment jouer
+
+1. Au début de la partie, chaque joueur dispose de plusieurs unités placées sur le plateau
+2. À chaque tour :
+   - Sélectionnez une unité en cliquant dessus
+   - Déplacez-la en cliquant sur une case valide
+   - Attaquez les unités ennemies à portée
+3. Le jeu se termine quand :
+   - Toutes les unités d'un joueur sont détruites
+   - Le nombre maximum de tours est atteint
+
+## Structure du projet
 
 ```
-java -jar target/wargame-1.0.jar
+src/
+├── main/
+│   └── java/
+│       └── fr/
+│           └── iatic/
+│               └── wargame/
+│                   ├── model/      # Classes du modèle
+│                   ├── view/       # Classes de l'interface graphique
+│                   └── controller/ # Classes de contrôle
 ```
 
-### Extensions prévues
+## Auteurs
 
-- Éditeur de scénarios personnalisés
-- Évènements aléatoires (renforts, météo)
-- Ligne de tir pour les unités à distance
-- Limite de temps par tour
+Nana Claudia
 
----
-
-## Équipe de développement
-
-Nana Claudia 
-
-Junior Koudogbo 
+Junior Koudogbo
 
 Thed Arthur 
 
@@ -82,11 +77,6 @@ Rayane Riffay
 
 Ben-Mohammed Marwan
 
----
+## Licence
 
-### Dates importantes
-Constitution des groupes : 30 avril 2025
-
-Rapport final : 22 mai 2025
-
-Soutenance et rendu : 23 mai 2025
+Ce projet est réalisé dans le cadre d'un cours universitaire et ne peut être utilisé sans autorisation.
