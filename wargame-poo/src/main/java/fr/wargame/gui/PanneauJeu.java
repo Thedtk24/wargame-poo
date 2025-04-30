@@ -5,6 +5,7 @@ import fr.wargame.model.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class PanneauJeu extends JPanel {
     private final List<HexagoneTerrain> hexagones;
     private Unite uniteSelectionnee;
     private Position positionSelectionnee;
+    private BufferedImage imageFond;
 
     public PanneauJeu(Partie partie) {
         this.partie = partie;
@@ -23,6 +25,7 @@ public class PanneauJeu extends JPanel {
         initialiserHexagones();
         configurerInteractions();
         setPreferredSize(calculerTaillePanneau());
+        genererImageFond();
     }
 
     private void initialiserHexagones() {
@@ -53,6 +56,20 @@ public class PanneauJeu extends JPanel {
             maxY = Math.max(maxY, centre.y);
         }
         return new Dimension(maxX + 60, maxY + 60);
+    }
+
+    private void genererImageFond() {
+        Dimension taille = calculerTaillePanneau();
+        imageFond = new BufferedImage(taille.width, taille.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = imageFond.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Dessiner les hexagones sur l'image de fond
+        for (HexagoneTerrain hex : hexagones) {
+            hex.dessinerFond(g2d);
+        }
+
+        g2d.dispose();
     }
 
     private void gererClic(Point point) {
@@ -100,9 +117,9 @@ public class PanneauJeu extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Dessiner les hexagones
-        for (HexagoneTerrain hex : hexagones) {
-            hex.dessiner(g2d);
+        // Dessiner l'image de fond
+        if (imageFond != null) {
+            g2d.drawImage(imageFond, 0, 0, null);
         }
 
         // Dessiner les unités
