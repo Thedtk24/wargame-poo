@@ -76,7 +76,7 @@ Nana Claudia
 
 Junior Koudogbo 
 
-Thed Arthur Toko
+Thed Arthur 
 
 Rayane Riffay
 
