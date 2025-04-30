@@ -46,6 +46,7 @@ Ce projet est une implémentation d’un **wargame tactique au tour par tour**, 
 ### Prérequis
 
 Java 17 ou supérieur
+
 Maven 3.x
 
 ### Compliation 
