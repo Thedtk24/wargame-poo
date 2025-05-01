@@ -1,6 +1,9 @@
 package fr.wargame.model;
 
-public class Unite {
+import java.io.Serializable;
+
+public class Unite implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final TypeUnite type;
     private Position position;
     private int pointsDeVie;

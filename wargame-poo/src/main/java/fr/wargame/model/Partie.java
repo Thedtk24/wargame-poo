@@ -1,9 +1,11 @@
 package fr.wargame.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Partie {
+public class Partie implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final Carte carte;
     private final List<Unite> unitesJoueur1;
     private final List<Unite> unitesJoueur2;

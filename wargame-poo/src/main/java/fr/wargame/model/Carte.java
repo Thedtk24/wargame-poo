@@ -1,9 +1,11 @@
 package fr.wargame.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Carte {
+public class Carte implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int largeur;
     private final int hauteur;
     private final Map<Position, Terrain> terrains;

@@ -6,6 +6,7 @@ fr/wargame/ia/IAJoueur.class
 fr/wargame/model/Terrain.class
 fr/wargame/model/Partie.class
 fr/wargame/gui/PanneauJeu$1.class
+fr/wargame/gui/FenetrePrincipale$1.class
 fr/wargame/model/Combat.class
 fr/wargame/model/Unite.class
 fr/wargame/gui/PanneauJeu.class
