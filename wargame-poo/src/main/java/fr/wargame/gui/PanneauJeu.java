@@ -8,6 +8,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 public class PanneauJeu extends JPanel {
     private final Partie partie;
@@ -15,12 +17,14 @@ public class PanneauJeu extends JPanel {
     private Unite uniteSelectionnee;
     private Position positionSelectionnee;
     private BufferedImage imageFond;
+    private Set<Position> deplacementsPossibles;
 
     public PanneauJeu(Partie partie) {
         this.partie = partie;
         this.hexagones = new ArrayList<>();
         this.uniteSelectionnee = null;
         this.positionSelectionnee = null;
+        this.deplacementsPossibles = new HashSet<>();
 
         initialiserHexagones();
         configurerInteractions();
@@ -72,6 +76,49 @@ public class PanneauJeu extends JPanel {
         g2d.dispose();
     }
 
+    private void calculerDeplacementsPossibles(Position position, int pointsDeplacement) {
+        deplacementsPossibles.clear();
+        if (pointsDeplacement <= 0) return;
+
+        Set<Position> casesVisitees = new HashSet<>();
+        Set<Position> casesAVisiter = new HashSet<>();
+        casesAVisiter.add(position);
+
+        while (!casesAVisiter.isEmpty()) {
+            Set<Position> nouvellesCases = new HashSet<>();
+            for (Position pos : casesAVisiter) {
+                casesVisitees.add(pos);
+                
+                // Dans un wargame, on ne peut se déplacer que dans les 6 directions adjacentes
+                // (haut, haut-droite, bas-droite, bas, bas-gauche, haut-gauche)
+                Position[] directions = {
+                    new Position(0, -1),   // Haut
+                    new Position(1, -1),   // Haut-droite
+                    new Position(1, 0),    // Droite
+                    new Position(0, 1),    // Bas
+                    new Position(-1, 1),   // Bas-gauche
+                    new Position(-1, 0)    // Gauche
+                };
+
+                for (Position dir : directions) {
+                    Position nouvellePos = new Position(pos.getX() + dir.getX(), pos.getY() + dir.getY());
+                    
+                    if (partie.getCarte().estPositionValide(nouvellePos) && 
+                        !casesVisitees.contains(nouvellePos) &&
+                        !partie.getCarte().estPositionOccupee(nouvellePos)) {
+                        
+                        int cout = partie.getCarte().getTerrain(nouvellePos).getPointsDeplacement();
+                        if (cout > 0 && pointsDeplacement >= cout) {
+                            nouvellesCases.add(nouvellePos);
+                            deplacementsPossibles.add(nouvellePos);
+                        }
+                    }
+                }
+            }
+            casesAVisiter = nouvellesCases;
+        }
+    }
+
     private void gererClic(Point point) {
         for (HexagoneTerrain hex : hexagones) {
             if (hex.contient(point)) {
@@ -82,6 +129,7 @@ public class PanneauJeu extends JPanel {
                     if (unite != null && unite.getJoueur() == partie.getJoueurCourant()) {
                         uniteSelectionnee = unite;
                         positionSelectionnee = pos;
+                        calculerDeplacementsPossibles(pos, unite.getPointsDeplacementRestants());
                     }
                 } else {
                     if (unite != null && unite.getJoueur() != partie.getJoueurCourant()) {
@@ -90,7 +138,7 @@ public class PanneauJeu extends JPanel {
                             Combat.resoudre(uniteSelectionnee, unite, hex.getTerrain());
                             uniteSelectionnee.consommerPointsDeplacement(1);
                         }
-                    } else if (unite == null && uniteSelectionnee.peutSeDeplacer()) {
+                    } else if (unite == null && deplacementsPossibles.contains(pos)) {
                         // Déplacement
                         int coutDeplacement = hex.getTerrain().getPointsDeplacement();
                         if (coutDeplacement > 0 && uniteSelectionnee.getPointsDeplacementRestants() >= coutDeplacement) {
@@ -100,6 +148,7 @@ public class PanneauJeu extends JPanel {
                     }
                     uniteSelectionnee = null;
                     positionSelectionnee = null;
+                    deplacementsPossibles.clear();
                 }
                 repaint();
                 break;
@@ -120,6 +169,21 @@ public class PanneauJeu extends JPanel {
         // Dessiner l'image de fond
         if (imageFond != null) {
             g2d.drawImage(imageFond, 0, 0, null);
+        }
+
+        // Dessiner les déplacements possibles
+        if (uniteSelectionnee != null) {
+            g2d.setColor(new Color(173, 216, 230, 80)); // Bleu clair (lightblue) avec une bonne visibilité
+            for (Position pos : deplacementsPossibles) {
+                HexagoneTerrain hex = trouverHexagone(pos);
+                if (hex != null) {
+                    g2d.fill(hex.creerForme());
+                    // Bordure plus visible pour bien délimiter
+                    g2d.setColor(new Color(173, 216, 230, 150));
+                    g2d.draw(hex.creerForme());
+                    g2d.setColor(new Color(173, 216, 230, 80));
+                }
+            }
         }
 
         // Dessiner les unités
