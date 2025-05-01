@@ -51,7 +51,7 @@ cd wargame-poo
 mvn clean package
 
 # Linux/macOS
-./mvnw clean package
+mvn clean package
 ```
 
 ## Lancement du jeu
