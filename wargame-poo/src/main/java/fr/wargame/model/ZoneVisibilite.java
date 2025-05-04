@@ -4,8 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.Serializable;
 
-public class ZoneVisibilite {
+public class ZoneVisibilite implements Serializable {
     private final Carte carte;
     private final Map<Integer, Set<Position>> positionsVisiblesParJoueur;
     private final Set<Position> positionsExplorees;

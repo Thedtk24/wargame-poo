@@ -15,13 +15,14 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class PanneauJeu extends JPanel {
-    private final Partie partie;
+    private Partie partie;
     private final List<HexagoneTerrain> hexagones;
     private Unite uniteSelectionnee;
     private Position positionSelectionnee;
     private BufferedImage imageFond;
     private BufferedImage imageBrouillard;
     private Set<Position> deplacementsPossibles;
+    private Set<Position> attaquesPossibles;
     private final Map<TypeUnite, BufferedImage> imagesUnites;
 
     public PanneauJeu(Partie partie) {
@@ -30,6 +31,7 @@ public class PanneauJeu extends JPanel {
         this.uniteSelectionnee = null;
         this.positionSelectionnee = null;
         this.deplacementsPossibles = new HashSet<>();
+        this.attaquesPossibles = new HashSet<>();
         this.imagesUnites = new HashMap<>();
 
         // Charger l'image du brouillard
@@ -334,5 +336,13 @@ public class PanneauJeu extends JPanel {
 
         // Restaurer l'état du Graphics2D
         g2d.setComposite(oldComposite);
+    }
+
+    public void setPartie(Partie partie) {
+        this.partie = partie;
+        this.uniteSelectionnee = null;
+        this.deplacementsPossibles = new HashSet<>();
+        this.attaquesPossibles = new HashSet<>();
+        repaint();
     }
 } 

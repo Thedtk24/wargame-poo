@@ -236,6 +236,12 @@ public class FenetrePrincipale extends JFrame {
     }
 
     private void sauvegarderPartie(ActionEvent e) {
+        // Création du dossier de sauvegarde s'il n'existe pas
+        File saveDir = new File(SAVE_DIR);
+        if (!saveDir.exists()) {
+            saveDir.mkdirs();
+        }
+
         // Création du nom de fichier avec la date et l'heure
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String dateTime = dateFormat.format(new Date());
@@ -316,42 +322,19 @@ public class FenetrePrincipale extends JFrame {
             
             if (selectedFile != null) {
                 try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(selectedFile))) {
+                    // Charger la partie et le mode IA
                     this.partie = (Partie) ois.readObject();
                     this.modeIA = ois.readBoolean();
                     this.ia = modeIA ? new IAJoueur(partie, 2) : null;
 
-                    // Création des composants du jeu
-                    JPanel jeuPanel = new JPanel(new BorderLayout());
-                    this.panneauJeu = new PanneauJeu(partie);
-                    this.labelJoueur = new JLabel();
-                    this.labelTour = new JLabel();
-                    JButton boutonFinTour = new JButton("Fin du tour");
-                    JButton boutonMenu = new JButton("Retour au menu");
-                    JButton boutonSauvegarder = new JButton("Sauvegarder");
+                    // Mettre à jour le panneau de jeu existant
+                    panneauJeu.setPartie(partie);
+                    panneauJeu.repaint();
 
-                    // Configuration du layout
-                    jeuPanel.add(panneauJeu, BorderLayout.CENTER);
-
-                    // Panel d'informations
-                    JPanel panneauInfo = new JPanel();
-                    panneauInfo.setLayout(new FlowLayout());
-                    panneauInfo.add(labelJoueur);
-                    panneauInfo.add(labelTour);
-                    panneauInfo.add(boutonFinTour);
-                    panneauInfo.add(boutonMenu);
-                    panneauInfo.add(boutonSauvegarder);
-                    jeuPanel.add(panneauInfo, BorderLayout.SOUTH);
-
-                    // Configuration des actions
-                    boutonFinTour.addActionListener(this::finDeTour);
-                    boutonMenu.addActionListener(evt -> cardLayout.show(panneauPrincipal, "MENU"));
-                    boutonSauvegarder.addActionListener(this::sauvegarderPartie);
-
-                    // Mise à jour des labels
+                    // Mettre à jour les labels
                     mettreAJourLabels();
 
-                    // Ajout du panneau de jeu
-                    panneauPrincipal.add(jeuPanel, "JEU");
+                    // Passer à l'écran de jeu
                     cardLayout.show(panneauPrincipal, "JEU");
 
                     JOptionPane.showMessageDialog(this, "Partie chargée avec succès !", "Chargement", JOptionPane.INFORMATION_MESSAGE);
