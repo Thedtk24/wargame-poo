@@ -113,7 +113,7 @@ public class FenetrePrincipale extends JFrame {
         initialiserPartie();
 
         // Création des composants du jeu
-        JPanel jeuPanel = new JPanel(new BorderLayout());
+        JPanel jeuPanel = new JPanel(new GridBagLayout());
         this.panneauJeu = new PanneauJeu(partie);
         this.labelJoueur = new JLabel();
         this.labelTour = new JLabel();
@@ -121,8 +121,12 @@ public class FenetrePrincipale extends JFrame {
         JButton boutonMenu = new JButton("Retour au menu");
         JButton boutonSauvegarder = new JButton("Sauvegarder");
 
-        // Configuration du layout
-        jeuPanel.add(panneauJeu, BorderLayout.CENTER);
+        // Centrage du plateau de jeu
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        jeuPanel.add(panneauJeu, gbc);
 
         // Panel d'informations
         JPanel panneauInfo = new JPanel();
@@ -132,7 +136,9 @@ public class FenetrePrincipale extends JFrame {
         panneauInfo.add(boutonFinTour);
         panneauInfo.add(boutonMenu);
         panneauInfo.add(boutonSauvegarder);
-        jeuPanel.add(panneauInfo, BorderLayout.SOUTH);
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.PAGE_END;
+        jeuPanel.add(panneauInfo, gbc);
 
         // Configuration des actions
         boutonFinTour.addActionListener(this::finDeTour);
@@ -197,9 +203,22 @@ public class FenetrePrincipale extends JFrame {
 
         if (partie.partieTerminee()) {
             int gagnant = partie.getJoueurGagnant();
-            String message = "Partie terminée ! " + 
-                (modeIA ? (gagnant == 1 ? "Vous avez gagné !" : "L'ordinateur a gagné !") 
-                       : ("Joueur " + gagnant + " gagne !"));
+            String message;
+            if (gagnant == 0) {
+                message = "Match nul : aucune unité survivante à la fin du tour " + Partie.TOUR_MAX + ".";
+            } else if (partie.getTour() > Partie.TOUR_MAX) {
+                if (gagnant == 1) {
+                    message = "Victoire du défenseur (Joueur 1) : vous avez résisté jusqu'au tour " + Partie.TOUR_MAX + " !";
+                } else {
+                    message = "Victoire de l'attaquant (Joueur 2) : le défenseur a été éliminé au dernier tour.";
+                }
+            } else {
+                if (gagnant == 1) {
+                    message = "Victoire du défenseur (Joueur 1) : l'armée adverse a été détruite !";
+                } else {
+                    message = "Victoire de l'attaquant (Joueur 2) : l'armée adverse a été détruite !";
+                }
+            }
             JOptionPane.showMessageDialog(this, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);
         }
@@ -215,8 +234,22 @@ public class FenetrePrincipale extends JFrame {
 
                 if (partie.partieTerminee()) {
                     int gagnant = partie.getJoueurGagnant();
-                    String message = "Partie terminée ! " + 
-                        (gagnant == 1 ? "Vous avez gagné !" : "L'ordinateur a gagné !");
+                    String message;
+                    if (gagnant == 0) {
+                        message = "Match nul : aucune unité survivante à la fin du tour " + Partie.TOUR_MAX + ".";
+                    } else if (partie.getTour() > Partie.TOUR_MAX) {
+                        if (gagnant == 1) {
+                            message = "Victoire du défenseur (Joueur 1) : vous avez résisté jusqu'au tour " + Partie.TOUR_MAX + " !";
+                        } else {
+                            message = "Victoire de l'attaquant (Joueur 2) : le défenseur a été éliminé au dernier tour.";
+                        }
+                    } else {
+                        if (gagnant == 1) {
+                            message = "Victoire du défenseur (Joueur 1) : l'armée adverse a été détruite !";
+                        } else {
+                            message = "Victoire de l'attaquant (Joueur 2) : l'armée adverse a été détruite !";
+                        }
+                    }
                     JOptionPane.showMessageDialog(this, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
                     System.exit(0);
                 }

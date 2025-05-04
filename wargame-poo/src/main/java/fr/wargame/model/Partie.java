@@ -12,6 +12,7 @@ public class Partie implements Serializable {
     private int joueurCourant;
     private int tour;
     private static final int TAUX_RECUPERATION = 10;
+    public static final int TOUR_MAX = 20; // Nombre de tours maximum pour la victoire du défenseur
     private final ZoneVisibilite zoneVisibilite;
 
     public Partie(Carte carte) {
@@ -75,23 +76,26 @@ public class Partie implements Serializable {
     }
 
     public boolean partieTerminee() {
+        // Victoire par destruction totale OU par défense jusqu'au tour max
         return unitesJoueur1.stream().noneMatch(Unite::estVivant) ||
-               unitesJoueur2.stream().noneMatch(Unite::estVivant);
+               unitesJoueur2.stream().noneMatch(Unite::estVivant) ||
+               tour > TOUR_MAX;
     }
 
     public int getJoueurGagnant() {
-        if (!partieTerminee()) {
-            return 0;
-        }
+        if (!partieTerminee()) return 0;
         boolean joueur1Vivant = unitesJoueur1.stream().anyMatch(Unite::estVivant);
         boolean joueur2Vivant = unitesJoueur2.stream().anyMatch(Unite::estVivant);
-        
-        if (joueur1Vivant && !joueur2Vivant) {
-            return 1;
-        } else if (!joueur1Vivant && joueur2Vivant) {
-            return 2;
+
+        if (tour > TOUR_MAX) {
+            // Si le défenseur (joueur 1) a survécu, il gagne
+            if (joueur1Vivant) return 1;
+            if (joueur2Vivant) return 2;
+            return 0; // Match nul (plus aucune unité)
         }
-        return 0; // Match nul (ne devrait pas arriver)
+        if (joueur1Vivant && !joueur2Vivant) return 1;
+        if (!joueur1Vivant && joueur2Vivant) return 2;
+        return 0;
     }
 
     // Getters
