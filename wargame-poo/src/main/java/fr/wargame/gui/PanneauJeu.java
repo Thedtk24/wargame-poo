@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 public class PanneauJeu extends JPanel {
     private final Partie partie;
@@ -20,6 +22,7 @@ public class PanneauJeu extends JPanel {
     private BufferedImage imageFond;
     private BufferedImage imageBrouillard;
     private Set<Position> deplacementsPossibles;
+    private final Map<TypeUnite, BufferedImage> imagesUnites;
 
     public PanneauJeu(Partie partie) {
         this.partie = partie;
@@ -27,13 +30,20 @@ public class PanneauJeu extends JPanel {
         this.uniteSelectionnee = null;
         this.positionSelectionnee = null;
         this.deplacementsPossibles = new HashSet<>();
+        this.imagesUnites = new HashMap<>();
 
         // Charger l'image du brouillard
         try {
             this.imageBrouillard = ImageIO.read(getClass().getResourceAsStream("/images/brouillard.png"));
+            
+            // Charger les images des unités
+            imagesUnites.put(TypeUnite.INFANTERIE, ImageIO.read(getClass().getResourceAsStream("/images/infanterie.png")));
+            imagesUnites.put(TypeUnite.INFANTERIE_LOURDE, ImageIO.read(getClass().getResourceAsStream("/images/infanterie_lourde.png")));
+            imagesUnites.put(TypeUnite.CAVALERIE, ImageIO.read(getClass().getResourceAsStream("/images/cavalerie.png")));
+            imagesUnites.put(TypeUnite.MAGE, ImageIO.read(getClass().getResourceAsStream("/images/mage.png")));
+            imagesUnites.put(TypeUnite.ARCHER, ImageIO.read(getClass().getResourceAsStream("/images/archer.png")));
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de l'image du brouillard : " + e.getMessage());
-            this.imageBrouillard = null;
+            System.err.println("Erreur lors du chargement des images : " + e.getMessage());
         }
 
         initialiserHexagones();
@@ -93,17 +103,20 @@ public class PanneauJeu extends JPanel {
         deplacementsPossibles.clear();
         if (pointsDeplacement <= 0) return;
 
-        Set<Position> casesVisitees = new HashSet<>();
+        // Map pour stocker le coût de déplacement pour atteindre chaque position
+        Map<Position, Integer> coutsDeplacement = new HashMap<>();
         Set<Position> casesAVisiter = new HashSet<>();
+        
+        // Initialisation
         casesAVisiter.add(position);
+        coutsDeplacement.put(position, 0);
 
         while (!casesAVisiter.isEmpty()) {
             Set<Position> nouvellesCases = new HashSet<>();
             for (Position pos : casesAVisiter) {
-                casesVisitees.add(pos);
+                int coutActuel = coutsDeplacement.get(pos);
                 
                 // Dans un wargame, on ne peut se déplacer que dans les 6 directions adjacentes
-                // (haut, haut-droite, bas-droite, bas, bas-gauche, haut-gauche)
                 Position[] directions = {
                     new Position(0, -1),   // Haut
                     new Position(1, -1),   // Haut-droite
@@ -116,16 +129,24 @@ public class PanneauJeu extends JPanel {
                 for (Position dir : directions) {
                     Position nouvellePos = new Position(pos.getX() + dir.getX(), pos.getY() + dir.getY());
                     
-                    // Vérifier si la position est valide, non visitée, non occupée et visible
+                    // Vérifier si la position est valide, non occupée, visible et n'est pas de l'eau
                     if (partie.getCarte().estPositionValide(nouvellePos) && 
-                        !casesVisitees.contains(nouvellePos) &&
                         !partie.getCarte().estPositionOccupee(nouvellePos) &&
-                        partie.getZoneVisibilite().estVisible(nouvellePos, partie.getJoueurCourant())) {
+                        partie.getZoneVisibilite().estVisible(nouvellePos, partie.getJoueurCourant()) &&
+                        partie.getCarte().getTerrain(nouvellePos) != Terrain.EAU_PROFONDE) {
                         
-                        int cout = partie.getCarte().getTerrain(nouvellePos).getPointsDeplacement();
-                        if (cout > 0 && pointsDeplacement >= cout) {
-                            nouvellesCases.add(nouvellePos);
-                            deplacementsPossibles.add(nouvellePos);
+                        int coutTerrain = partie.getCarte().getTerrain(nouvellePos).getPointsDeplacement();
+                        if (coutTerrain > 0) {
+                            int nouveauCout = coutActuel + coutTerrain;
+                            
+                            // Si le nouveau coût est inférieur au coût précédent ou si c'est une nouvelle position
+                            if (nouveauCout <= pointsDeplacement && 
+                                (!coutsDeplacement.containsKey(nouvellePos) || nouveauCout < coutsDeplacement.get(nouvellePos))) {
+                                
+                                coutsDeplacement.put(nouvellePos, nouveauCout);
+                                deplacementsPossibles.add(nouvellePos);
+                                nouvellesCases.add(nouvellePos);
+                            }
                         }
                     }
                 }
@@ -229,21 +250,54 @@ public class PanneauJeu extends JPanel {
         HexagoneTerrain hex = trouverHexagone(unite.getPosition());
         if (hex != null) {
             Point centre = hex.getCentre();
-            int taille = 20;
+            int taille = 40; // Taille plus grande pour les images
             
-            // Couleur selon le joueur
-            g2d.setColor(unite.getJoueur() == 1 ? Color.BLUE : Color.RED);
-            g2d.fillOval(centre.x - taille/2, centre.y - taille/2, taille, taille);
-            
-            // Bordure
-            g2d.setColor(Color.BLACK);
-            g2d.drawOval(centre.x - taille/2, centre.y - taille/2, taille, taille);
-            
-            // Points de vie
-            g2d.setColor(Color.WHITE);
-            String pv = String.valueOf(unite.getPointsDeVie());
-            FontMetrics fm = g2d.getFontMetrics();
-            g2d.drawString(pv, centre.x - fm.stringWidth(pv)/2, centre.y + fm.getAscent()/2);
+            // Dessiner l'image de l'unité
+            BufferedImage imageUnite = imagesUnites.get(unite.getType());
+            if (imageUnite != null) {
+                // Redimensionner l'image si nécessaire
+                Image imageRedimensionnee = imageUnite.getScaledInstance(taille, taille, Image.SCALE_SMOOTH);
+                
+                // Calculer la position pour centrer l'image
+                int x = centre.x - taille/2;
+                int y = centre.y - taille/2;
+                
+                // Dessiner l'image
+                g2d.drawImage(imageRedimensionnee, x, y, null);
+                
+                // Ajouter un indicateur d'équipe (petit cercle en haut à droite de l'image)
+                int rayonIndicateur = 6;
+                int xIndicateur = x + taille - rayonIndicateur - 2;
+                int yIndicateur = y + rayonIndicateur + 2;
+                
+                // Dessiner le cercle de l'équipe
+                g2d.setColor(unite.getJoueur() == 1 ? Color.BLUE : Color.RED);
+                g2d.fillOval(xIndicateur - rayonIndicateur, yIndicateur - rayonIndicateur, 
+                            rayonIndicateur * 2, rayonIndicateur * 2);
+                
+                // Ajouter une bordure blanche pour le rendre plus visible
+                g2d.setColor(Color.WHITE);
+                g2d.setStroke(new BasicStroke(1));
+                g2d.drawOval(xIndicateur - rayonIndicateur, yIndicateur - rayonIndicateur, 
+                            rayonIndicateur * 2, rayonIndicateur * 2);
+                
+                // Dessiner les points de vie
+                String pv = String.valueOf(unite.getPointsDeVie());
+                g2d.setColor(Color.WHITE);
+                g2d.setFont(new Font("Arial", Font.BOLD, 12));
+                FontMetrics fm = g2d.getFontMetrics();
+                g2d.drawString(pv, 
+                             centre.x - fm.stringWidth(pv)/2, 
+                             centre.y + taille/3 + fm.getAscent()/2);
+            } else {
+                // Fallback si l'image n'est pas chargée
+                g2d.setColor(unite.getJoueur() == 1 ? Color.BLUE : Color.RED);
+                g2d.fillOval(centre.x - taille/2, centre.y - taille/2, taille, taille);
+                g2d.setColor(Color.WHITE);
+                String pv = String.valueOf(unite.getPointsDeVie());
+                FontMetrics fm = g2d.getFontMetrics();
+                g2d.drawString(pv, centre.x - fm.stringWidth(pv)/2, centre.y + fm.getAscent()/2);
+            }
         }
     }
 
@@ -265,14 +319,9 @@ public class PanneauJeu extends JPanel {
             Point centre = hex.getCentre();
 
             if (!partie.getZoneVisibilite().estVisible(pos, partie.getJoueurCourant())) {
-                if (partie.getZoneVisibilite().estExplore(pos)) {
-                    // Zone explorée mais non visible : brouillard semi-transparent
-                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-                } else {
-                    // Zone non explorée : brouillard opaque
-                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-                }
-
+                // Zone non visible : brouillard opaque
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+                
                 // Dessiner le brouillard
                 g2d.drawImage(imageBrouillard,
                     centre.x - HexagoneTerrain.RAYON,
