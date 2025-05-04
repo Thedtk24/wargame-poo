@@ -48,21 +48,33 @@ public class HexagoneTerrain {
         int x = position.getX();
         int y = position.getY();
         
-        // Décalage pour les lignes impaires
-        int decalageX = (y % 2 == 0) ? 0 : RAYON;
+        // Pour un hexagone à bords plats, la largeur est 2*RAYON
+        // La hauteur est RAYON * sqrt(3)
+        double largeurHex = 2.0 * RAYON;
+        double hauteurHex = RAYON * Math.sqrt(3);
         
-        return new Point(
-            x * (2 * RAYON) + RAYON + decalageX,
-            y * (int)(RAYON * Math.sqrt(3)) + RAYON
-        );
+        // Décalage horizontal pour les lignes impaires
+        double decalageX = (y % 2 == 0) ? 0 : RAYON;
+        
+        // Calcul de la position du centre
+        // On réduit l'espace entre les hexagones
+        double centreX = x * (largeurHex - 2) + RAYON + decalageX;
+        double centreY = y * (hauteurHex - 2) + hauteurHex / 2.0;
+        
+        return new Point((int)Math.round(centreX), (int)Math.round(centreY));
     }
 
     public Path2D.Double creerForme() {
         Path2D.Double path = new Path2D.Double();
+        
+        // Pour un hexagone à bords plats, on commence par le point le plus à gauche
+        // et on tourne dans le sens horaire
         for (int i = 0; i < 6; i++) {
-            double angle = 2.0 * Math.PI / 6 * i;
-            int x = (int)(centre.x + RAYON * Math.cos(angle));
-            int y = (int)(centre.y + RAYON * Math.sin(angle));
+            // Angle de départ à -30 degrés (point le plus à gauche)
+            double angle = Math.PI / 6 + 2.0 * Math.PI / 6 * i;
+            double x = centre.x + RAYON * Math.cos(angle);
+            double y = centre.y + RAYON * Math.sin(angle);
+            
             if (i == 0) {
                 path.moveTo(x, y);
             } else {
