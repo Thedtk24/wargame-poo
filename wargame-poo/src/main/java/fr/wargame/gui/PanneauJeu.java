@@ -172,7 +172,18 @@ public class PanneauJeu extends JPanel {
                 } else {
                     if (unite != null && unite.getJoueur() != partie.getJoueurCourant()) {
                         // Attaque
-                        if (estAPortee(uniteSelectionnee.getPosition(), pos)) {
+                        boolean attaquePossible = false;
+                        if (uniteSelectionnee.getType() == TypeUnite.ARCHER && uniteSelectionnee.getPosition().distance(pos) > 1.5) {
+                            // Attaque à distance de l'archer : vérifier la ligne de visée
+                            if (ligneDeViseeDegagee(uniteSelectionnee.getPosition(), pos)) {
+                                attaquePossible = true;
+                            } else {
+                                JOptionPane.showMessageDialog(this, "Ligne de visée bloquée : attaque impossible (unité ou montagne sur la trajectoire)", "Attaque impossible", JOptionPane.WARNING_MESSAGE);
+                            }
+                        } else if (estAPortee(uniteSelectionnee.getPosition(), pos)) {
+                            attaquePossible = true;
+                        }
+                        if (attaquePossible) {
                             Combat.resoudre(uniteSelectionnee, unite, hex.getTerrain());
                             uniteSelectionnee.consommerPointsDeplacement(1);
                             mettreAJourVisibilite();
@@ -344,5 +355,31 @@ public class PanneauJeu extends JPanel {
         this.deplacementsPossibles = new HashSet<>();
         this.attaquesPossibles = new HashSet<>();
         repaint();
+    }
+
+    // Vérifie la ligne de visée entre deux positions (hexagones) : pas d'unité ni de montagne entre archer et cible
+    private boolean ligneDeViseeDegagee(Position depart, Position arrivee) {
+        // Algorithme de DDA/Bresenham adapté à la grille hexagonale
+        int x0 = depart.getX();
+        int y0 = depart.getY();
+        int x1 = arrivee.getX();
+        int y1 = arrivee.getY();
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+        int n = Math.max(Math.abs(dx), Math.abs(dy));
+        if (n == 0) return true;
+        double stepX = dx / (double) n;
+        double stepY = dy / (double) n;
+        double x = x0 + 0.5;
+        double y = y0 + 0.5;
+        for (int i = 1; i < n; i++) { // on ignore la case de départ (i=0) et d'arrivée (i=n)
+            int xi = (int) Math.round(x + i * stepX);
+            int yi = (int) Math.round(y + i * stepY);
+            Position pos = new Position(xi, yi);
+            if (!partie.getCarte().estPositionValide(pos)) return false;
+            if (partie.getCarte().estPositionOccupee(pos)) return false;
+            if (partie.getCarte().getTerrain(pos) == Terrain.MONTAGNE) return false;
+        }
+        return true;
     }
 } 
