@@ -1,11 +1,12 @@
 package fr.wargame.gui;
 
 import fr.wargame.model.*;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,7 @@ public class PanneauJeu extends JPanel {
     private Unite uniteSelectionnee;
     private Position positionSelectionnee;
     private BufferedImage imageFond;
+    private BufferedImage imageBrouillard;
     private Set<Position> deplacementsPossibles;
 
     public PanneauJeu(Partie partie) {
@@ -26,10 +28,21 @@ public class PanneauJeu extends JPanel {
         this.positionSelectionnee = null;
         this.deplacementsPossibles = new HashSet<>();
 
+        // Charger l'image du brouillard
+        try {
+            this.imageBrouillard = ImageIO.read(getClass().getResourceAsStream("/images/brouillard.png"));
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement de l'image du brouillard : " + e.getMessage());
+            this.imageBrouillard = null;
+        }
+
         initialiserHexagones();
         configurerInteractions();
         setPreferredSize(calculerTaillePanneau());
         genererImageFond();
+        
+        // Initialiser la visibilité
+        partie.initialiserVisibilite();
     }
 
     private void initialiserHexagones() {
@@ -103,9 +116,11 @@ public class PanneauJeu extends JPanel {
                 for (Position dir : directions) {
                     Position nouvellePos = new Position(pos.getX() + dir.getX(), pos.getY() + dir.getY());
                     
+                    // Vérifier si la position est valide, non visitée, non occupée et visible
                     if (partie.getCarte().estPositionValide(nouvellePos) && 
                         !casesVisitees.contains(nouvellePos) &&
-                        !partie.getCarte().estPositionOccupee(nouvellePos)) {
+                        !partie.getCarte().estPositionOccupee(nouvellePos) &&
+                        partie.getZoneVisibilite().estVisible(nouvellePos, partie.getJoueurCourant())) {
                         
                         int cout = partie.getCarte().getTerrain(nouvellePos).getPointsDeplacement();
                         if (cout > 0 && pointsDeplacement >= cout) {
@@ -137,6 +152,7 @@ public class PanneauJeu extends JPanel {
                         if (estAPortee(uniteSelectionnee.getPosition(), pos)) {
                             Combat.resoudre(uniteSelectionnee, unite, hex.getTerrain());
                             uniteSelectionnee.consommerPointsDeplacement(1);
+                            mettreAJourVisibilite();
                         }
                     } else if (unite == null && deplacementsPossibles.contains(pos)) {
                         // Déplacement
@@ -144,6 +160,7 @@ public class PanneauJeu extends JPanel {
                         if (coutDeplacement > 0 && uniteSelectionnee.getPointsDeplacementRestants() >= coutDeplacement) {
                             partie.getCarte().deplacerUnite(uniteSelectionnee, pos);
                             uniteSelectionnee.consommerPointsDeplacement(coutDeplacement);
+                            mettreAJourVisibilite();
                         }
                     }
                     uniteSelectionnee = null;
@@ -160,6 +177,11 @@ public class PanneauJeu extends JPanel {
         return pos1.distance(pos2) <= 1.5; // Distance pour attaque adjacente
     }
 
+    private void mettreAJourVisibilite() {
+        // Mettre à jour la visibilité pour le joueur courant
+        partie.getZoneVisibilite().calculerVisibilitePourJoueur(partie.getJoueurCourant());
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -173,12 +195,11 @@ public class PanneauJeu extends JPanel {
 
         // Dessiner les déplacements possibles
         if (uniteSelectionnee != null) {
-            g2d.setColor(new Color(173, 216, 230, 80)); // Bleu clair (lightblue) avec une bonne visibilité
+            g2d.setColor(new Color(173, 216, 230, 80));
             for (Position pos : deplacementsPossibles) {
                 HexagoneTerrain hex = trouverHexagone(pos);
                 if (hex != null) {
                     g2d.fill(hex.creerForme());
-                    // Bordure plus visible pour bien délimiter
                     g2d.setColor(new Color(173, 216, 230, 150));
                     g2d.draw(hex.creerForme());
                     g2d.setColor(new Color(173, 216, 230, 80));
@@ -199,6 +220,9 @@ public class PanneauJeu extends JPanel {
                 g2d.fill(hex.creerForme());
             }
         }
+
+        // Dessiner le brouillard
+        dessinerBrouillard(g2d);
     }
 
     private void dessinerUnite(Graphics2D g2d, Unite unite) {
@@ -228,5 +252,38 @@ public class PanneauJeu extends JPanel {
                 .filter(hex -> hex.getPosition().equals(position))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private void dessinerBrouillard(Graphics2D g2d) {
+        if (imageBrouillard == null) return;
+
+        // Sauvegarder l'état du Graphics2D
+        Composite oldComposite = g2d.getComposite();
+
+        for (HexagoneTerrain hex : hexagones) {
+            Position pos = hex.getPosition();
+            Point centre = hex.getCentre();
+
+            if (!partie.getZoneVisibilite().estVisible(pos, partie.getJoueurCourant())) {
+                if (partie.getZoneVisibilite().estExplore(pos)) {
+                    // Zone explorée mais non visible : brouillard semi-transparent
+                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+                } else {
+                    // Zone non explorée : brouillard opaque
+                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+                }
+
+                // Dessiner le brouillard
+                g2d.drawImage(imageBrouillard,
+                    centre.x - HexagoneTerrain.RAYON,
+                    centre.y - HexagoneTerrain.RAYON,
+                    2 * HexagoneTerrain.RAYON,
+                    2 * HexagoneTerrain.RAYON,
+                    null);
+            }
+        }
+
+        // Restaurer l'état du Graphics2D
+        g2d.setComposite(oldComposite);
     }
 } 

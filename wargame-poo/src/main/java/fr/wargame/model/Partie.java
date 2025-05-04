@@ -12,6 +12,7 @@ public class Partie implements Serializable {
     private int joueurCourant;
     private int tour;
     private static final int TAUX_RECUPERATION = 10;
+    private final ZoneVisibilite zoneVisibilite;
 
     public Partie(Carte carte) {
         this.carte = carte;
@@ -19,6 +20,7 @@ public class Partie implements Serializable {
         this.unitesJoueur2 = new ArrayList<>();
         this.joueurCourant = 1;
         this.tour = 1;
+        this.zoneVisibilite = new ZoneVisibilite(carte);
     }
 
     public void ajouterUnite(Unite unite) {
@@ -28,6 +30,15 @@ public class Partie implements Serializable {
             unitesJoueur2.add(unite);
         }
         carte.placerUnite(unite);
+        
+        // Mettre à jour la visibilité pour le joueur de l'unité
+        zoneVisibilite.calculerVisibilitePourJoueur(unite.getJoueur());
+    }
+
+    public void initialiserVisibilite() {
+        // Calculer la visibilité initiale pour les deux joueurs
+        zoneVisibilite.calculerVisibilitePourJoueur(1);
+        zoneVisibilite.calculerVisibilitePourJoueur(2);
     }
 
     public void finDeTour() {
@@ -49,6 +60,9 @@ public class Partie implements Serializable {
 
         // Réinitialisation des points de déplacement
         reinitialiserPointsDeplacement();
+
+        // Mise à jour de la visibilité pour le nouveau joueur
+        zoneVisibilite.calculerVisibilitePourJoueur(joueurCourant);
     }
 
     private void reinitialiserPointsDeplacement() {
@@ -99,5 +113,9 @@ public class Partie implements Serializable {
 
     public List<Unite> getUnitesJoueur2() {
         return new ArrayList<>(unitesJoueur2);
+    }
+
+    public ZoneVisibilite getZoneVisibilite() {
+        return zoneVisibilite;
     }
 } 

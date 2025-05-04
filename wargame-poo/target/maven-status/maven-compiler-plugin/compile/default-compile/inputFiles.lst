@@ -1,12 +1,13 @@
-/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/gui/PanneauJeu.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/Terrain.java
-/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/gui/HexagoneTerrain.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/Carte.java
-/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/gui/FenetrePrincipale.java
-/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/Combat.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/App.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/ia/IAJoueur.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/Unite.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/Position.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/TypeUnite.java
 /Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/Partie.java
+/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/gui/PanneauJeu.java
+/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/gui/HexagoneTerrain.java
+/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/ZoneVisibilite.java
+/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/gui/FenetrePrincipale.java
+/Users/thedarthur/Documents/wargame-poo/wargame-poo/src/main/java/fr/wargame/model/Combat.java

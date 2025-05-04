@@ -9,6 +9,7 @@ public class Unite implements Serializable {
     private int pointsDeVie;
     private int pointsDeplacementRestants;
     private final int joueur; // 1 ou 2
+    private final int porteeVision; // Nouvel attribut
 
     public Unite(TypeUnite type, Position position, int joueur) {
         this.type = type;
@@ -16,6 +17,7 @@ public class Unite implements Serializable {
         this.pointsDeVie = type.getPvMax();
         this.pointsDeplacementRestants = type.getDeplacement();
         this.joueur = joueur;
+        this.porteeVision = 3; // Portée de vision par défaut
     }
 
     public void subirDegats(int degats) {
@@ -68,5 +70,9 @@ public class Unite implements Serializable {
 
     public int getJoueur() {
         return joueur;
+    }
+
+    public int getPorteeVision() {
+        return porteeVision;
     }
 } 

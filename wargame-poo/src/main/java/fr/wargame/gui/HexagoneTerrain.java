@@ -15,11 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HexagoneTerrain {
-    private static final int RAYON = 30;
+    public static final int RAYON = 30;
     private final Position position;
     private final Terrain terrain;
     private final Path2D.Double forme;
     private final Point centre;
+    private boolean estExplore;
     private static final Map<Terrain, BufferedImage> imagesTerrain = new HashMap<>();
 
     static {
@@ -42,6 +43,7 @@ public class HexagoneTerrain {
         this.terrain = terrain;
         this.centre = calculerCentre();
         this.forme = creerForme();
+        this.estExplore = false;
     }
 
     private Point calculerCentre() {
@@ -235,5 +237,13 @@ public class HexagoneTerrain {
 
     public Terrain getTerrain() {
         return terrain;
+    }
+
+    public boolean estExplore() {
+        return estExplore;
+    }
+
+    public void setExplore(boolean explore) {
+        this.estExplore = explore;
     }
 } 
