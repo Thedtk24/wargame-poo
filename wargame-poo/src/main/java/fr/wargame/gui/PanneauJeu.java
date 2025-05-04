@@ -24,6 +24,9 @@ public class PanneauJeu extends JPanel {
     private Set<Position> deplacementsPossibles;
     private Set<Position> attaquesPossibles;
     private final Map<TypeUnite, BufferedImage> imagesUnites;
+    private Unite uniteAttaquee;
+    private Timer timerAnimation;
+    private int compteurAnimation;
 
     public PanneauJeu(Partie partie) {
         this.partie = partie;
@@ -33,6 +36,19 @@ public class PanneauJeu extends JPanel {
         this.deplacementsPossibles = new HashSet<>();
         this.attaquesPossibles = new HashSet<>();
         this.imagesUnites = new HashMap<>();
+        this.uniteAttaquee = null;
+        this.compteurAnimation = 0;
+
+        // Initialiser le timer pour l'animation
+        this.timerAnimation = new Timer(100, e -> {
+            compteurAnimation++;
+            if (compteurAnimation >= 5) { // Animation de 5 frames
+                uniteAttaquee = null;
+                compteurAnimation = 0;
+                timerAnimation.stop();
+            }
+            repaint();
+        });
 
         // Charger l'image du brouillard
         try {
@@ -184,9 +200,11 @@ public class PanneauJeu extends JPanel {
                             attaquePossible = true;
                         }
                         if (attaquePossible) {
+                            uniteAttaquee = unite;
                             Combat.resoudre(uniteSelectionnee, unite, hex.getTerrain());
                             uniteSelectionnee.consommerPointsDeplacement(1);
                             mettreAJourVisibilite();
+                            timerAnimation.start();
                         }
                     } else if (unite == null && deplacementsPossibles.contains(pos)) {
                         // Déplacement
@@ -274,6 +292,12 @@ public class PanneauJeu extends JPanel {
                 // Calculer la position pour centrer l'image
                 int x = centre.x - taille/2;
                 int y = centre.y - taille/2;
+                
+                // Si c'est l'unité attaquée, ajouter un effet de clignotement rouge
+                if (unite == uniteAttaquee && compteurAnimation % 2 == 0) {
+                    g2d.setColor(new Color(255, 0, 0, 100));
+                    g2d.fillOval(x - 5, y - 5, taille + 10, taille + 10);
+                }
                 
                 // Dessiner l'image
                 g2d.drawImage(imageRedimensionnee, x, y, null);
