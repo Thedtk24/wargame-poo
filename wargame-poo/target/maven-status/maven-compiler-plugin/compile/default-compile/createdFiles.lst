@@ -2,7 +2,9 @@ fr/wargame/gui/HexagoneTerrain.class
 fr/wargame/App.class
 fr/wargame/model/Partie.class
 fr/wargame/gui/PanneauJeu$1.class
+fr/wargame/gui/FenetrePrincipale$2.class
 fr/wargame/gui/HexagoneTerrain$1.class
+fr/wargame/gui/FenetrePrincipale$3.class
 fr/wargame/model/TypeUnite.class
 fr/wargame/model/Position.class
 fr/wargame/ia/IAJoueur.class

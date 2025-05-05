@@ -47,52 +47,80 @@ public class FenetrePrincipale extends JFrame {
     }
 
     private JPanel creerMenuPrincipal() {
-        JPanel menuPanel = new JPanel(new GridBagLayout());
-        menuPanel.setBackground(new Color(50, 50, 50));
+        JPanel menuPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon icon = new ImageIcon(getClass().getResource("/images/fond.png"));
+                g.drawImage(icon.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);
         
-        // Titre
+        // Titre stylisé
         JLabel titre = new JLabel("WARGAME", SwingConstants.CENTER);
-        titre.setFont(new Font("Arial", Font.BOLD, 48));
-        titre.setForeground(Color.WHITE);
+        titre.setFont(new Font("Impact", Font.BOLD, 72));
+        titre.setForeground(new Color(255, 215, 0)); // Or
+        titre.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(139, 69, 19), 3), // Marron
+            BorderFactory.createEmptyBorder(10, 20, 10, 20)
+        ));
         menuPanel.add(titre, gbc);
         
-        // Boutons du menu
-        JButton[] boutons = {
-            creerBoutonMenu("Nouvelle Partie", this::nouvellePartie),
-            creerBoutonMenu("Charger Partie", this::chargerPartie),
-            creerBoutonMenu("Règles du Jeu", this::afficherRegles),
-            creerBoutonMenu("Quitter", e -> System.exit(0))
-        };
-        
-        for (JButton bouton : boutons) {
-            menuPanel.add(bouton, gbc);
-        }
+        // Ajout des boutons du menu
+        menuPanel.add(creerBoutonMenu("Nouvelle Partie", this::nouvellePartie), gbc);
+        menuPanel.add(creerBoutonMenu("Charger Partie", this::chargerPartie), gbc);
+        menuPanel.add(creerBoutonMenu("Règles", this::afficherRegles), gbc);
+        menuPanel.add(creerBoutonMenu("Quitter", e -> System.exit(0)), gbc);
         
         return menuPanel;
     }
 
     private JButton creerBoutonMenu(String texte, ActionListener action) {
-        JButton bouton = new JButton(texte);
-        bouton.setFont(new Font("Arial", Font.PLAIN, 24));
-        bouton.setBackground(new Color(70, 70, 70));
-        bouton.setForeground(Color.WHITE);
-        bouton.setFocusPainted(false);
+        JButton bouton = new JButton(texte) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Fond du bouton
+                g2d.setColor(new Color(70, 70, 70, 200)); // Gris semi-transparent
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                
+                // Bordure
+                g2d.setColor(new Color(255, 215, 0)); // Or
+                g2d.setStroke(new BasicStroke(2));
+                g2d.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 20, 20);
+                
+                // Texte
+                g2d.setColor(Color.WHITE);
+                FontMetrics fm = g2d.getFontMetrics();
+                int x = (getWidth() - fm.stringWidth(texte)) / 2;
+                int y = (getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+                g2d.drawString(texte, x, y);
+            }
+        };
+        
+        bouton.setContentAreaFilled(false);
         bouton.setBorderPainted(false);
+        bouton.setFocusPainted(false);
+        bouton.setFont(new Font("Arial", Font.BOLD, 24));
         bouton.setPreferredSize(new Dimension(300, 50));
         bouton.addActionListener(action);
         
         // Effet de survol
         bouton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                bouton.setBackground(new Color(90, 90, 90));
+                bouton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                bouton.repaint();
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                bouton.setBackground(new Color(70, 70, 70));
+                bouton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                bouton.repaint();
             }
         });
         
