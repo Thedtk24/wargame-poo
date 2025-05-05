@@ -60,8 +60,8 @@ public class HexagoneTerrain {
         
         // Calcul de la position du centre
         // On réduit l'espace entre les hexagones
-        double centreX = x * (largeurHex - 2) + RAYON + decalageX;
-        double centreY = y * (hauteurHex - 2) + hauteurHex / 2.0;
+        double centreX = x * (largeurHex - 4) + RAYON + decalageX;
+        double centreY = y * (hauteurHex - 4) + hauteurHex / 2.0;
         
         return new Point((int)Math.round(centreX), (int)Math.round(centreY));
     }
