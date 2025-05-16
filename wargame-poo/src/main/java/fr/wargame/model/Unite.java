@@ -10,6 +10,7 @@ public class Unite implements Serializable {
     private int pointsDeplacementRestants;
     private final int joueur; // 1 ou 2
     private final int porteeVision; // Nouvel attribut
+    private Carte carte; // Référence à la carte
 
     public Unite(TypeUnite type, Position position, int joueur) {
         this.type = type;
@@ -18,6 +19,14 @@ public class Unite implements Serializable {
         this.pointsDeplacementRestants = type.getDeplacement();
         this.joueur = joueur;
         this.porteeVision = 3; // Portée de vision par défaut
+    }
+
+    public void setCarte(Carte carte) {
+        this.carte = carte;
+    }
+
+    public Carte getCarte() {
+        return carte;
     }
 
     public void subirDegats(int degats) {

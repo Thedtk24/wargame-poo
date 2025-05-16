@@ -26,6 +26,7 @@ public class Carte implements Serializable {
 
     public void placerUnite(Unite unite) {
         if (estPositionValide(unite.getPosition()) && !unites.containsKey(unite.getPosition())) {
+            unite.setCarte(this);
             unites.put(unite.getPosition(), unite);
         }
     }

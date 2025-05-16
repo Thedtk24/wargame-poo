@@ -29,5 +29,10 @@ public class Combat {
 
         // Application des dégâts
         defenseur.subirDegats(degatsFinaux);
+
+        // Si l'unité est morte après les dégâts, la retirer de la carte
+        if (!defenseur.estVivant()) {
+            defenseur.getCarte().retirerUnite(defenseur);
+        }
     }
 } 
