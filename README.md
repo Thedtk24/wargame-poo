@@ -237,15 +237,15 @@ java -jar target/wargame-poo-1.0-SNAPSHOT.jar
 - En cas de problème de sécurité, autorisez l'application dans Préférences Système > Sécurité
 
 ### WSL (Windows Subsystem for Linux)
-Si le clonage du dépôt échoue avec une erreur de "safe directory", utilisez :
+- Si le clonage du dépôt échoue avec une erreur de "safe directory", utilisez :
 `git config --global --add safe.directory <chemin_du_projet>`
 
-Si le build Maven échoue avec "no POM in this directory", assurez-vous d’être dans le dossier contenant pom.xml
+- Si le build Maven échoue avec "no POM in this directory", assurez-vous d’être dans le dossier contenant pom.xml
 
-Si le jeu ne se lance pas et affiche une erreur HeadlessException, installez Java avec interface graphique via :
+- Si le jeu ne se lance pas et affiche une erreur HeadlessException, installez Java avec interface graphique via :
 `sudo apt install openjdk-21-jdk`
 
-Si vous avez installé une version headless, supprimez-la avec :
+- Si vous avez installé une version headless, supprimez-la avec :
 `sudo apt remove openjdk-*-headless`
 
 Vérifiez que la variable $DISPLAY est bien définie (echo $DISPLAY) et que WSLg est actif pour l'affichage graphique
