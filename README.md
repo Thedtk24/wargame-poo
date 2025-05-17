@@ -236,6 +236,22 @@ java -jar target/wargame-poo-1.0-SNAPSHOT.jar
 - Sur les Mac M1/M2, utilisez la version ARM64 de Java
 - En cas de problème de sécurité, autorisez l'application dans Préférences Système > Sécurité
 
+### WSL (Windows Subsystem for Linux)
+Si le clonage du dépôt échoue avec une erreur de "safe directory", utilisez :
+`git config --global --add safe.directory <chemin_du_projet>`
+
+Si le build Maven échoue avec "no POM in this directory", assurez-vous d’être dans le dossier contenant pom.xml
+
+Si le jeu ne se lance pas et affiche une erreur HeadlessException, installez Java avec interface graphique via :
+`sudo apt install openjdk-21-jdk`
+
+Si vous avez installé une version headless, supprimez-la avec :
+`sudo apt remove openjdk-*-headless`
+
+Vérifiez que la variable $DISPLAY est bien définie (echo $DISPLAY) et que WSLg est actif pour l'affichage graphique
+
+Si l’erreur "Unable to access jarfile" apparaît, vérifiez que le .jar a bien été généré dans le dossier target/ après le `mvn clean package`
+
 ## Support
 
 Pour signaler un bug ou suggérer une amélioration, veuillez créer une issue sur le dépôt GitHub.
