@@ -248,9 +248,9 @@ java -jar target/wargame-poo-1.0-SNAPSHOT.jar
 - Si vous avez installé une version headless, supprimez-la avec :
 `sudo apt remove openjdk-*-headless`
 
-Vérifiez que la variable $DISPLAY est bien définie (echo $DISPLAY) et que WSLg est actif pour l'affichage graphique
+  Vérifiez que la variable $DISPLAY est bien définie (echo $DISPLAY) et que WSLg est actif pour l'affichage graphique
 
-Si l’erreur "Unable to access jarfile" apparaît, vérifiez que le .jar a bien été généré dans le dossier target/ après le `mvn clean package`
+- Si l’erreur "Unable to access jarfile" apparaît, vérifiez que le .jar a bien été généré dans le dossier target/ après le `mvn clean package`
 
 ## Support
 
