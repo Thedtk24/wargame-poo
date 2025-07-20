@@ -1,4 +1,4 @@
-# Wargame POO
+# Wargame POO Project
 
 Un jeu de stratégie au tour par tour développé en Java avec une interface graphique Swing.
 
