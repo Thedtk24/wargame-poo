@@ -262,4 +262,4 @@ Pour signaler un bug ou suggérer une amélioration, veuillez créer une issue s
 - Thed T
 - Claudia N
 - Rayane R
-- Marwan B
+- Marwan B.
